@@ -2,6 +2,11 @@ An open source extension for environment funcitons
 
 If you have any issues, please contact me on discord, my tag is sleve
 
+How to use:
+1. Download all files through github and put the folder in your executor workspace. 
+2. Move init.lua to your autoexecutor folder
+3. Enjoy :)
+
 Documentation: (99 functions)
 
 -----------------------------------------------------------------------
