@@ -7,7 +7,7 @@ How to use:
 2. Move init.lua to your autoexecutor folder
 3. Enjoy :)
 
-Documentation: (99 functions)
+Documentation: (104 functions)
 
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
