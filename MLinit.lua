@@ -12,7 +12,7 @@ local toLoad = {
     moreDebug = true
 }
 
-local folderPath = "More/modules/"
+local folderPath = "MoreLibrary/modules/"
 
 print("Initializing More Library...")
 
@@ -24,11 +24,12 @@ for moduleName, shouldLoad in pairs(toLoad) do
                 local library = loadstring(readfile(filePath))()
                 if library and library.load then
                     library.load()
+                    print("Loaded library: "..moduleName)
                 end
             end)
             
             if not success then
-                warn("Failed to load " .. moduleName .. ": " .. tostring(err))
+                warn("Failed to load: " .. moduleName .. ": " .. tostring(err))
             end
             
         else
@@ -37,4 +38,4 @@ for moduleName, shouldLoad in pairs(toLoad) do
     end
 end
 
-print("More Library v1.0 Loaded.")
+print("More Library v1.0.0a Loaded")

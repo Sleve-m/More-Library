@@ -1,6 +1,6 @@
 --More String v1.0
 
-return moreString = {}
+local moreString = {}
 
 local function split(input, sep)
     if sep == nil then sep = "%s" end
@@ -12,15 +12,15 @@ local function split(input, sep)
 end
 
 local function trim(str)
-    return str:match("^%s*(.-)%s*$")
+    return string.match("^%s*(.-)%s*$")
 end
 
 local function startsWith(str, start)
-    return str:sub(1, #start) == start
+    return string.sub(1, #start) == start
 end
 
 local function endsWith(str, ending)
-    return ending == "" or str:sub(-#ending) == ending
+    return ending == "" or string.sub(-#ending) == ending
 end
 
 local function random(length)
@@ -28,13 +28,13 @@ local function random(length)
     local randomString = ""
     for i = 1, length do
         local randIndex = math.random(#chars)
-        randomString = randomString .. chars:sub(randIndex, randIndex)
+        randomString = randomString .. string.sub(chars, randIndex, randIndex)
     end
     return randomString
 end
 
 local function capitalize(str)
-    return str:sub(1,1):upper() .. str:sub(2):lower()
+    return string.upper(string.sub(1,1)) .. string.lower(string.sub(2))
 end
 
 local function prettyNumber(str)
@@ -71,17 +71,17 @@ local function contains(str, sub)
 end
 
 local function escape(str)
-    return str:gsub("([%(%)%.%%%+%-%*%?%[%^%$])", "%%%1")
+    return string.gsub("([%(%)%.%%%+%-%*%?%[%^%$])", "%%%1")
 end
 
 local function stripTags(str)
-    return str:gsub("%b<>", "")
+    return string.gsub("%b<>", "")
 end
 
 local function toTable(str)
     local t = {}
     for i = 1, #str do
-        table.insert(t, str:sub(i, i))
+        table.insert(t, string.sub(i, i))
     end
     return t
 end
@@ -96,8 +96,8 @@ local function shuffle(str)
 end
 
 local function title(str)
-    return str:gsub("(%a)(%w*)", function(first, rest)
-        return first:upper() .. rest:lower()
+    return string.gsub("(%a)(%w*)", function(first, rest)
+        return string.upper(first) .. string.lower(rest)
     end)
 end
 
@@ -112,7 +112,6 @@ local function tag(str, tagName, attributes)
 end
 
 local function color(str, hex)
-    -- Easy wrapper for font color
     return string.format('<font color="%s">%s</font>', hex, str)
 end
 
