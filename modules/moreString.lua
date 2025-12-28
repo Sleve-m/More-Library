@@ -1,6 +1,10 @@
---More String v1.0
+--More String v1.0.0a
 
 local moreString = {}
+
+local function appendString(str, app)
+    return str..app
+end
 
 local function split(input, sep)
     if sep == nil then sep = "%s" end
@@ -11,16 +15,12 @@ local function split(input, sep)
     return t
 end
 
-local function trim(str)
-    return string.match("^%s*(.-)%s*$")
-end
-
 local function startsWith(str, start)
-    return string.sub(1, #start) == start
+    return string.sub(str, 1, #start) == start
 end
 
 local function endsWith(str, ending)
-    return ending == "" or string.sub(-#ending) == ending
+    return ending == "" or string.sub(str, -#ending) == ending
 end
 
 local function random(length)
@@ -34,7 +34,7 @@ local function random(length)
 end
 
 local function capitalize(str)
-    return string.upper(string.sub(1,1)) .. string.lower(string.sub(2))
+    return string.upper(string.sub(str, 1,1)) .. string.lower(string.sub(str, 2))
 end
 
 local function prettyNumber(str)
@@ -47,8 +47,8 @@ local function prettyNumber(str)
     return formatted
 end
 
-local function shortenNumber(n)
-    local suffixes = {"k", "M", "B", "T", "Q"}
+local function shortenNumber(n, customsuffixes)
+    local suffixes = customsuffixes or {"k", "M", "B", "T", "q", "Q", "s", "S", "O", "N", "D"}
     local i = #suffixes
     for j = i, 1, -1 do
         local v = 1000 ^ j
@@ -81,7 +81,7 @@ end
 local function toTable(str)
     local t = {}
     for i = 1, #str do
-        table.insert(t, string.sub(i, i))
+        table.insert(t, string.sub(str, i, i))
     end
     return t
 end
@@ -111,7 +111,8 @@ local function tag(str, tagName, attributes)
     return string.format("<%s%s>%s</%s>", tagName, attrStr, str, tagName)
 end
 
-local function color(str, hex)
+local function color(str, color)
+    local hex = Color3.tohex(color)
     return string.format('<font color="%s">%s</font>', hex, str)
 end
 
@@ -139,18 +140,17 @@ function moreString.load()
     local globalString = getgenv().string
     setreadonly(globalString, false)
     globalString.split = split
-    globalString.trim = trim
-    globalString.startsWith = startsWith
-    globalString.endsWith = endsWith
+    globalString.startswith = startsWith
+    globalString.endswith = endsWith
     globalString.random = random
     globalString.capitalize = capitalize
-    globalString.prettyNumber = prettyNumber
+    globalString.prettynumber = prettyNumber
     globalString.shortennumber = shortenNumber
     globalString.pad = pad
     globalString.contains = contains
     globalString.escape = escape
-    globalString.stripTags = stripTags
-    globalString.toTable = toTable
+    globalString.striptags = stripTags
+    globalString.totable = toTable
     globalString.shuffle = shuffle
     globalString.title = title
     globalString.tag = tag
@@ -160,6 +160,7 @@ function moreString.load()
     globalString.italic = italic
     globalString.underline = underline
     globalString.strike = strike
+    globalString.append = appendString
     setreadonly(globalString, true)
 end
 

@@ -1,3 +1,5 @@
+--More Input v1.0.0a
+
 local UserInputService = game:GetService("UserInputService")
 local moreInput = {}
 
@@ -67,14 +69,17 @@ local function isWindowActive()
 end
 
 function moreInput.load()
-    getgenv().iskeydown = isKeyDown
-    getgenv().isbuttondown = isButtonDown
-    getgenv().iscombo = isCombo
-    getgenv().onpress = onPress
-    getgenv().ontoggle = onToggle
-    getgenv().waitforkey = waitForKey
-    getgenv().getmousepos = getMousePos
-    getgenv().iswindowactive = isWindowActive
+    local inputGlobal = game:GetService("UserInputService")
+    setreadonly(inputGlobal, false)
+    inputGlobal.iskeydown = isKeyDown
+    inputGlobal.isbuttondown = isButtonDown
+    inputGlobal.iscombo = isCombo
+    inputGlobal.onpress = onPress
+    inputGlobal.ontoggle = onToggle
+    inputGlobal.waitforkey = waitForKey
+    inputGlobal.getmousepos = getMousePos
+    inputGlobal.iswindowactive = isWindowActive
+    setreadonly(inputGlobal, true)
 end
 
 return moreInput

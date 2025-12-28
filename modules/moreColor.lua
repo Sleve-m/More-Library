@@ -1,4 +1,4 @@
---More Color v1.0
+--More Color v1.0.0a
 
 moreColor = {}
 
@@ -28,7 +28,7 @@ local function invert(color)
 end
 
 local function random()
-    return Color3.fromHSV(math.random(), 1, 1)
+    return Color3.fromRGB(math.random(0, 255), math.random(0, 255), math.random(0, 255))
 end
 
 local function blend(c1, c2, alpha)
@@ -71,14 +71,14 @@ end
 function moreColor.load()
     local globalColor = getgenv().Color3
     setreadonly(globalColor, false)
-    globalColor.toHex = toHex
+    globalColor.tohex = toHex
     globalColor.darken = darken
     globalColor.lighten = lighten
     globalColor.invert = invert
     globalColor.random = random
     globalColor.blend = blend
-    globalColor.getLuminance = getLuminance
-    globalColor.isBright = isBright
+    globalColor.getluminance = getLuminance
+    globalColor.isbright = isBright
     globalColor.contrast = contrast
     globalColor.grayscale = grayscale
     globalColor.desaturate = desaturate

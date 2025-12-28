@@ -1,15 +1,21 @@
 --More Library v1.0.0a by Sleve
 
+getgenv().MoreLibraryLoaded = false
+
+loadstring(isfile("MoreLibrary/updater.lua") and readfile("MoreLibrary/updater.lua") or game:HttpGet("https://raw.githubusercontent.com/Sleve-m/More-Library/refs/heads/main/updater.lua"))():update()
+
 local toLoad = {
     moreMath = true,
+    moreColor = true,
     moreString = true,
     moreTable = true,
-    moreColor = true,
+    moreUI = true,
     moreDrawing = true,
     moreFilesystem = true,
     moreInput = true,
     moreNetwork = true,
-    moreDebug = true
+    moreDebug = true,
+    moreObject = true
 }
 
 local folderPath = "MoreLibrary/modules/"
@@ -37,5 +43,7 @@ for moduleName, shouldLoad in pairs(toLoad) do
         end
     end
 end
+
+getgenv().MoreLibraryLoaded = true
 
 print("More Library v1.0.0a Loaded")

@@ -1,3 +1,16 @@
-12/25/25
+12/26/25
 v1.0.0a
-Release! Merry Christmas!
+
+Release
+
+Added 1 new module; More UI:
+Added 7 new ui functions:
+moreui.createtext()
+moreui.mcreateimage()
+moreui.createframe()
+UDpix.new()
+SUDpix.new()
+SUDim2.new()
+moreui.makedraggable()
+moreui.adaptivescroll()
+

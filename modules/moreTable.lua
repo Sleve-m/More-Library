@@ -1,4 +1,4 @@
---More Table v1.0
+--More Table v1.0.0a
 
 local moreTable = {}
 
@@ -20,7 +20,15 @@ end
 
 local function count(t)
     local c = 0
-    for _ in pairs(t) do c = c + 1 end
+    for _ in pairs(t) do c += 1 end
+    return c
+end
+
+local function deepcount(t)
+    local c = 0
+    for _, v in pairs(t) do 
+        c += (typeof(v)=="table" and count(v) or 1)
+    end
     return c
 end
 
@@ -76,7 +84,7 @@ end
 local function map(t, func)
     local newTable = {}
     for i, v in ipairs(t) do
-        newTable[i] = func(v, i)
+        newTable[i] = func(i, v, t)
     end
     return newTable
 end
@@ -84,7 +92,7 @@ end
 local function filter(t, func)
     local newTable = {}
     for i, v in ipairs(t) do
-        if func(v, i) then
+        if func(i, v, t) then
             table.insert(newTable, v)
         end
     end
@@ -115,7 +123,7 @@ local function flatten(t)
     local flat = {}
     local function recursive(val)
         if type(val) == "table" then
-            for _, v in ipairs(val) do
+            for _, v in pairs(val) do
                 recursive(v)
             end
         else
@@ -128,7 +136,7 @@ end
 
 local function some(t, predicate)
     for i, v in ipairs(t) do
-        if predicate(v, i) then
+        if predicate(i, v, t) then
             return true
         end
     end
@@ -137,11 +145,17 @@ end
 
 local function every(t, predicate)
     for i, v in ipairs(t) do
-        if not predicate(v, i) then
+        if not predicate(i, v, t) then
             return false
         end
     end
     return true
+end
+
+local function tabledo(t, predicate)
+    for i, v in ipairs(t) do
+        predicate(i, v, t)
+    end
 end
 
 local function sortBy(t, property)
@@ -175,7 +189,7 @@ end
 
 local function sortAlphabetical(t)
     table.sort(t, function(a, b)
-        return tostring(a):lower() < tostring(b):lower()
+        return tostring(a) < tostring(b)
     end)
     return t
 end
@@ -189,12 +203,101 @@ local function sortNumerical(t)
     return t
 end
 
+local function replace(t, a, b)
+    for key, value in pairs(t) do
+        t[key] = value==a and b or value
+    end
+    return t
+end
+
+local function deepreplace(t, a, b)
+    for key, value in pairs(t) do
+        if typeof(value)=="table" then deepreplace(value, a, b) else t[key] = (value==a and b or value) end
+    end
+    return t
+end
+
+local function flatstring(t, keys)
+    local keylist = keys or ""
+    local result = ""
+    for key, value in pairs(t) do
+        local keyStr = keylist .. (typeof(key) == "string" and '["'..key..'"]' or "["..key.."]")
+        if typeof(value) == "table" then
+            result = result .. flatstring(value, keyStr).."\n"
+        else
+            local valStr = tostring(value)
+            result = result .. keyStr .. " = " .. valStr .. (next(t, key) and ",\n" or "")
+        end
+    end
+    return result
+end
+
+local function deepstring(t, stack)
+    local st = stack or 0
+    local outer_tab = string.rep("\t", st)
+    local inner_tab = string.rep("\t", st + 1)
+    local result = "{\n"
+    for key, value in pairs(t) do
+        local keyStr = typeof(key) == "string" and '["'..key..'"]' or "["..key.."]"
+        local valStr
+        if typeof(value) == "table" then
+            valStr = deepstring(value, st + 1)
+        else
+            valStr = tostring(value)
+        end
+        local hasNext = next(t, key) ~= nil
+        local comma = hasNext and "," or ""
+        result = result .. inner_tab .. keyStr .. " = " .. valStr .. comma .. "\n"
+    end
+    return result .. outer_tab .. "}"
+end
+
+local function concat(t, sep)
+    local result = ""
+    local char = sep or ""
+    for key, value in pairs(t) do
+        result = result..tostring(value)..(next(t, key) and char or "")
+    end
+    return result
+end
+
+local function deepconcat(t, sep, newline)
+    local result = ""
+    local char = sep or ""
+    local nl = newline or true
+    for key, value in pairs(t) do
+        local chunk
+        local is_table = typeof(value) == "table"
+        if is_table then
+            chunk = deepconcat(value, char, nl)
+        else
+            chunk = tostring(value)
+        end
+        result = result .. chunk
+        local nextKey, nextValue = next(t, key)
+        if nextKey then
+            if nl then
+                local nextIsTable = typeof(nextValue) == "table"
+                if is_table or nextIsTable then
+                    result = result .. "\n"
+                else
+                    result = result .. char
+                end
+            else
+                result = result .. char
+            end
+        end
+    end
+    return result
+end
+
 function moreTable.load()
     local globalTable = getgenv().table
     setreadonly(globalTable, false)
     globalTable.keys = keys
     globalTable.values = values
     globalTable.count = count
+    globalTable.deepcount = deepcount
     globalTable.merge = merge
     globalTable.deepCopy = deepCopy
     globalTable.reverse = reverse
@@ -207,11 +310,18 @@ function moreTable.load()
     globalTable.flatten = flatten
     globalTable.some = some
     globalTable.every = every
-    globalTable.sortBy = sortBy
-    globalTable.sortDesc = sortDesc
-    globalTable.sortNatural = sortNatural
-    globalTable.sortAlphabetical = sortAlphabetical
-    globalTable.sortNumerical = sortNumerical
+    globalTable.fordo = tabledo
+    globalTable.sortby = sortBy
+    globalTable.sortdesc = sortDesc
+    globalTable.sortnatural = sortNatural
+    globalTable.sortalphabetical = sortAlphabetical
+    globalTable.sortnumerical = sortNumerical
+    globalTable.replace = replace
+    globalTable.deepreplace = deepreplace
+    globalTable.flatstring = flatstring
+    globalTable.deepstring = deepstring
+    globalTable.concat = concat
+    globalTable.deepconcat = deepconcat
     setreadonly(globalTable, true)
 end
 

@@ -1,7 +1,7 @@
---More Filesystem v1.0
+--More IO v1.0.0a
 local HttpService = game:GetService("HttpService")
 
-local moreFilesystem = {}
+local moreIO = {}
 
 local function safeWriteFile(path, content)
     local folders = string.split(path, "/")
@@ -94,7 +94,7 @@ local function wipeFolder(path)
         if isfile(item) then
             delfile(item)
         elseif isfolder(item) then
-            wipeFolder(item) -- Recursive call
+            wipeFolder(item)
         end
     end
     
@@ -105,7 +105,6 @@ local function copyFile(sourcePath, destPath)
     if not isfile(sourcePath) then return false end
     
     local content = readfile(sourcePath)
-    -- Ensure destination folder exists
     local destFolder = destPath:match("^(.*)/")
     if destFolder and not isfolder(destFolder) then
         makefolder(destFolder)
@@ -141,6 +140,8 @@ local function appendFileWithLog(path, text)
 end
 
 function moreFilesystem.load()
+    local ioGlobal = {}
+    getgenv()
     getgenv().writetabletofile = writeTableToFile
     getgenv().loadtablefromfile = loadTableFromFile
     getgenv().requirefile = requireFile

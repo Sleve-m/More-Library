@@ -1,4 +1,4 @@
---More Math v1.0
+--More Math v1.0.0a
 
 local moreMath = {}
 
@@ -74,18 +74,18 @@ function moreMath.load()
     globalMath.odd = odd
     globalMath.even = even
     globalMath.approx = approx
-    globalMath.roundTo = roundTo
+    globalMath.roundto = roundTo
     globalMath.map = map
     globalMath.inverseLerp = inverseLerp
     globalMath.smoothstep = smoothstep
     globalMath.chance = chance
     globalMath.randomfloat = randomfloat
-    globalMath.lerpAngle = lerpAngle
+    globalMath.lerpangle = lerpAngle
     globalMath.wrap = wrap
     globalMath.pingpong = pingpong
     globalMath.snap = snap
-    globalMath.deltaAngle = deltaAngle
-    globalMath.quadraticBezier = quadraticBezier
+    globalMath.deltaangle = deltaAngle
+    globalMath.quadraticbezier = quadraticBezier
     setreadonly(globalMath, true)
 end
 

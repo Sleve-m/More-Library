@@ -1,3 +1,5 @@
+--More Drawing v1.0.0
+
 local Camera = workspace.CurrentCamera
 local moreDrawing = {}
 
@@ -85,16 +87,18 @@ local function getCenter()
 end
 
 function moreDrawing.load()
-    getgenv().wts = worldToScreen
-    getgenv().getscreencenter = getCenter
-    getgenv().cleardrawings = cleardrawcache
-    getgenv().drawline = createLine
-    getgenv().drawcircle = createCircle
-    getgenv().drawtext = createText
-    getgenv().drawsquare = createSquare
-    getgenv().drawtriangle = createTriangle
-    getgenv().drawquad = createQuad
-    getgenv().drawimage = createImage
+    drawingGlobal = getgenv().Drawing
+    setreadonly(drawingGlobal, false)
+    drawingGlobal.wts = worldToScreen
+    drawingGlobal.getscreencenter = getCenter
+    drawingGlobal.drawline = createLine
+    drawingGlobal.drawcircle = createCircle
+    drawingGlobal.drawtext = createText
+    drawingGlobal.drawsquare = createSquare
+    drawingGlobal.drawtriangle = createTriangle
+    drawingGlobal.drawquad = createQuad
+    drawingGlobal.drawimage = createImage
+    setreadonly(drawingGlobal, true)
 end
 
 return moreDrawing
