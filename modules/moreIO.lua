@@ -139,7 +139,7 @@ local function appendFileWithLog(path, text)
     appendfile(path, timestamp .. tostring(text) .. "\n")
 end
 
-function moreFilesystem.load()
+function moreIO.load()
     local ioGlobal = {}
     ioGlobal.writetabletofile = writeTableToFile
     ioGlobal.loadtablefromfile = loadTableFromFile
@@ -155,4 +155,4 @@ function moreFilesystem.load()
     setreadonly(getgenv().io, true)
 end
 
-return moreFilesystem
+return moreIO
