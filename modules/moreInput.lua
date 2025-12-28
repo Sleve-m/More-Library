@@ -3,31 +3,39 @@
 local UserInputService = game:GetService("UserInputService")
 local moreInput = {}
 
-local function getKeyEnum(key)
-    if typeof(key) == "Instance" then return key end
-    if typeof(key) == "string" then
-        if Enum.KeyCode[key] then return Enum.KeyCode[key] end
-        if Enum.UserInputType[key] then return Enum.UserInputType[key] end
-    end
-    return key
-end
-
-local function isKeyDown(key)
-    local keyEnum = getKeyEnum(key)
-    return keyEnum and UserInputService:IsKeyDown(keyEnum)
+local function getEnum(buttonName)
+    if typeof(buttonName) == "EnumItem" then return buttonName end
+    local key = nil
+    local success = pcall(function() key = Enum.KeyCode[buttonName] end)
+    if success and key then return key, "KeyCode" end
+    local mouse = nil
+    local success = pcall(function() mouse = Enum.UserInputType[buttonName] end)
+    if success and mouse then return mouse, "UserInputType" end
+    return nil, nil
 end
 
 local function isButtonDown(button)
-    local btnEnum = getKeyEnum(button) or Enum.UserInputType.MouseButton1
-    return UserInputService:IsMouseButtonPressed(btnEnum)
+    local btnEnum, etype = getEnum(button)
+    if not btnEnum then return false end
+    if etype == "KeyCode" then
+        return UserInputService:IsKeyDown(btnEnum)
+    elseif etype == "UserInputType" then
+        return UserInputService:IsMouseButtonPressed(btnEnum)
+    end
+    return false
+end
+
+local function isKeyDown(key)
+    local keyEnum, etype = getEnum(key)
+    return keyEnum and UserInputService:IsKeyDown(keyEnum)
 end
 
 local function isCombo(key1, key2)
-    return isKeyDown(key1) and isKeyDown(key2)
+    return isButtonDown(key1) and isButtonDown(key2)
 end
 
 local function onPress(key, callback)
-    local keyEnum = getKeyEnum(key)
+    local keyEnum, etype = getEnum(key)
     if not keyEnum then return nil end
     
     local conn = UserInputService.InputBegan:Connect(function(input, gameProcessed)
@@ -48,7 +56,7 @@ local function onToggle(key, callback)
 end
 
 local function waitForKey(key)
-    local keyEnum = getKeyEnum(key)
+    local keyEnum, etype = getEnum(key)
     if not keyEnum then return end
     
     while true do
@@ -64,13 +72,19 @@ local function getMousePos()
     return UserInputService:GetMouseLocation()
 end
 
+local winisfocused = false
+
+UserInputService.WindowFocused:Connect(function() winisfocused = true end)
+UserInputService.WindowFocusReleased:Connect(function() winisfocused = false end)
+
 local function isWindowActive()
-    return UserInputService.WindowFocused
+    return winisfocused
 end
 
 function moreInput.load()
-    local inputGlobal = game:GetService("UserInputService")
+    local inputGlobal = moreInput
     setreadonly(inputGlobal, false)
+    inputGlobal.getenum = getEnum
     inputGlobal.iskeydown = isKeyDown
     inputGlobal.isbuttondown = isButtonDown
     inputGlobal.iscombo = isCombo
@@ -79,7 +93,8 @@ function moreInput.load()
     inputGlobal.waitforkey = waitForKey
     inputGlobal.getmousepos = getMousePos
     inputGlobal.iswindowactive = isWindowActive
-    setreadonly(inputGlobal, true)
+    getgenv().moreinput = inputGlobal
+    setreadonly(getgenv().moreinput, true)
 end
 
 return moreInput

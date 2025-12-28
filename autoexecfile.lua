@@ -1,0 +1,1 @@
+loadstring(isfile("MoreLibrary/init.lua") and readfile("MoreLibrary/init.lua") or game:HttpGet("https://raw.githubusercontent.com/Sleve-m/More-Library/refs/heads/main/init.lua"))()

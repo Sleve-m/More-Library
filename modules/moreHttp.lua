@@ -1,9 +1,7 @@
 --More Network v1.0.0a
 
 local HttpService = game:GetService("HttpService")
-local moreNetwork = {}
-
-local httpRequest = getgenv().request or getgenv().http_request
+local moreHttp = {}
 
 local function simpleGet(url)
     local success, response = pcall(function()
@@ -13,7 +11,7 @@ local function simpleGet(url)
 end
 
 local function simpleRequest(url, method, headers, body)
-    local response = httpRequest({
+    local response = request({
         Url = url,
         Method = method or "GET",
         Headers = headers or {},
@@ -31,7 +29,7 @@ local function jsonRequest(url, method, data)
         local s, e = pcall(function() return HttpService:JSONEncode(data) end)
         if s then encodedData = e else warn("moreNetwork: Failed to encode JSON") return nil end
     end
-    local response = httpRequest({
+    local response = request({
         Url = url,
         Method = method or "POST",
         Headers = headers,
@@ -54,7 +52,7 @@ local function sendWebhook(url, contentOrTable)
     end
     local headers = { ["Content-Type"] = "application/json" }
     local encoded = HttpService:JSONEncode(payload)
-    httpRequest({
+    request({
         Url = url,
         Method = "POST",
         Headers = headers,
@@ -66,23 +64,34 @@ local function download_repo(owner, repo, branch, target_folder)
     local branch = branch or "main"
     local target_folder = target_folder or repo
     local tree_url = "https://api.github.com/repos/"..owner.."/"..repo.."/git/trees/"..branch.."?recursive=1"
-    local execname = identifyexecutor()
+    local headers = {
+        ["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+        ["Accept"] = "application/json"
+    }
     local response = http_request({
         Url = tree_url,
         Method = "GET",
-        Headers = { ["User-Agent"] = execname }
+        Headers = headers
     })
-    if not response or response.StatusCode ~= 200 then
-        return warn("Failed to fetch repo. Check owner/repo name or rate limits.")
+    if not response then
+        return warn("[-] Request Failed: Response was nil (Network Error?)")
+    end
+    if response.StatusCode ~= 200 then
+        warn("[-] GitHub API Failed!")
+        warn("    Status: " .. tostring(response.StatusCode))
+        warn("    Body: " .. tostring(response.Body))
+        return
     end
     local data = HttpService:JSONDecode(response.Body)
-    if not data.tree then return warn("No file tree found.") end
+    if not data.tree then 
+        return warn("[-] No file tree found in response.") 
+    end
     if not isfolder(target_folder) then 
         makefolder(target_folder) 
     end
+    local file_count = 0
     for _, item in pairs(data.tree) do
         local path = target_folder .. "/" .. item.path
-        
         if item.type == "tree" then
             if not isfolder(path) then
                 makefolder(path)
@@ -90,21 +99,29 @@ local function download_repo(owner, repo, branch, target_folder)
         elseif item.type == "blob" then
             local raw_url = "https://raw.githubusercontent.com/"..owner.."/"..repo.."/"..branch.."/"..item.path
             task.spawn(function()
-                local content = game:HttpGet(raw_url)
-                writefile(path, content)
+                local success, content = pcall(function() 
+                    return game:HttpGet(raw_url) 
+                end)
+                if success then
+                    writefile(path, content)
+                    file_count = file_count + 1
+                else
+                    warn("[-] Failed to download file: " .. item.path)
+                end
             end)
         end
     end
 end
 
-function moreNetwork.load()
-    setreadonly(httpRequest, false)
-    httpRequest.simpleget = simpleGet
-    httpRequest.simplerequest = simpleRequest
-    httpRequest.jsonrequest = jsonRequest
-    httpRequest.sendwebhook = sendWebhook
-    httpRequest.downloadrepo = download_repo
-    setreadonly(httpRequest, true)
+function moreHttp.load()
+    httpGlobal = {}
+    httpGlobal.simpleget = simpleGet
+    httpGlobal.simplerequest = simpleRequest
+    httpGlobal.jsonrequest = jsonRequest
+    httpGlobal.sendwebhook = sendWebhook
+    httpGlobal.downloadrepo = download_repo
+    getgenv().morehttp = httpGlobal
+    setreadonly(getgenv().morehttp, true)
 end
 
-return moreNetwork
+return moreHttp

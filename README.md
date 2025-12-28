@@ -14,7 +14,7 @@ if not getgenv().MoreLibraryLoaded then
 end
 
 
-If you have any issues, please contact me on discord, my tag is sleve
+If you have any issues or suggestions please contact me on discord - sleve
 
 
 Documentation: (112 functions)
@@ -420,13 +420,13 @@ Auto scroll: For scrolling(in y and x) using the mouse position in relation to a
 
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
-More Object v1.0.0a: (1 functions)
+More Instance v1.0.0a: (1 functions)
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
 
-Object.modify(inst: Instance, properties: table)
+Instance.modify(inst: Instance, properties: table)
 Sets given properties(keys) to values. Useful for 
-Example: Object.modify(myTextLabel, {
+Example: Instance.modify(myTextLabel, {
   Text = "Hello",
   BackgroundTransparency = 1
 })
@@ -436,41 +436,44 @@ Example: Object.modify(myTextLabel, {
 More Input v1.0.0a: (8 functions)
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
-Uses game:GetService("UserInputService") or UserInputService(from More Services)
 
-UserInputService.iskeydown(key) -> bool
-Example: if UserInputService.iskeydown("LeftShift") then ... end
+moreinput.getenum(key: string) -> keycode/userinputtype, EnumType: String ("KeyCode"/"UserInputType")
+Returns the keycode for keys or userinputtype for mouse buttons.
+Example: local keyEnum, etype = moreinput.getenum("LeftShift") -> Enum.KeyCode.LeftShift, "KeyCode"
 
-UserInputService.isbuttondown(button) -> bool
-Example: if UserInputService.isbuttondown("MouseButton2") then ... end
+moreinput.iskeydown(key) -> bool
+Example: if moreinput.iskeydown("LeftShift") then ... end
 
-UserInputService.iscombo(key1, key2) -> bool
+moreinput.isbuttondown(button) -> bool
+Example: if moreinput.isbuttondown("MouseButton2") then ... end
+
+moreinput.iscombo(key1, key2) -> bool
 Returns true ONLY if both keys are held down.
-Example: if UserInputService.iscombo("LeftControl", "C") then print("Copied!") end
+Example: if moreinput.iscombo("LeftControl", "C") then print("Copied!") end
 
-UserInputService.onpress(key, callback) -> Connection
+moreinput.onpress(key, callback) -> Connection
 Runs the function once per press.
-Example: UserInputService.onpress("Q", function() print("Q pressed") end)
+Example: moreinput.onpress("Q", function() print("Q pressed") end)
 
-UserInputService.ontoggle(key, callback(state)) -> Connection
+moreinput.ontoggle(key, callback(state)) -> Connection
 Toggles an internal boolean on/off and runs the callback with the new state.
 Example: 
-UserInputService.ontoggle("P", function(enabled) 
+moreinput.ontoggle("P", function(enabled) 
     print("Aimbot is now:", enabled) 
 end)
 
-UserInputService.waitforkey(key) -> void
+moreinput.waitforkey(key) -> void
 Pauses the script execution until the user presses the specific key.
 Example: 
 print("Press K to start...")
-UserInputService.waitforkey("K")
+moreinput.waitforkey("K")
 print("Started!")
 
-UserInputService.getmousepos() -> Vector2
-Example: local pos = UserInputService.getmousepos()
+moreinput.getmousepos() -> Vector2
+Example: local pos = moreinput.getmousepos()
 
-UserInputService.iswindowactive() -> bool
-Example: if not UserInputService.iswindowactive() then return end
+moreinput.iswindowactive() -> bool
+Example: if not moreinput.iswindowactive() then return end
 
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
@@ -554,40 +557,38 @@ Example: local circle = Drawing.drawcircle(Drawing.getscreencenter(), 100, Color
 
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
-More Request v1.0.0a: (5 functions)
+More Http v1.0.0a: (5 functions)
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
 
-(Both request. and http_request. work)
-
-request.simpleget(url: string) -> string | nil
+morehttp.simpleget(url: string) -> string | nil
 A wrapper for game:HttpGet. Returns the raw body string or nil on failure.
-Example: local rawHtml = request.simpleget("https://google.com")
+Example: local rawHtml = morehttp.simpleget("https://google.com")
 
-request.simplerequest(url: string, method: string, headers: table, body: string) -> table
+morehttp.simplerequest(url: string, method: string, headers: table, body: string) -> table
 Sends a raw HTTP request. Method defaults to "GET".
 Returns a table containing {Success, StatusCode, Body, Headers}.
 Example: 
-local res = request.simplerequest("https://example.com", "POST", {}, "raw_data")
+local res = morehttp.simplerequest("https://example.com", "POST", {}, "raw_data")
 print(res.StatusCode)
 
-request.jsonrequest(url: string, method: string, data: table) -> table | nil
+morehttp.jsonrequest(url: string, method: string, data: table) -> table | nil
 Automatically JSON encodes the 'data' table, sends it with the correct headers,
 and attempts to JSON decode the response.
 Example: 
-local response = request.jsonrequest("https://api.mygame.com/save", "POST", {Score = 100})
+local response = morehttp.jsonrequest("https://api.mygame.com/save", "POST", {Score = 100})
 print(response.Success)
 
-request.sendwebhook(url: string, payload: string | table) -> void
+morehttp.sendwebhook(url: string, payload: string | table) -> void
 Quickly sends a message to a Discord webhook. 
 Accepts a simple string (message content) OR a table (for embeds/username/avatar).
-Example (Simple): request.sendwebhook("https://discord.com/api/...", "Hello World!")
-Example (Complex): request.sendwebhook("url", { content = "Hi", username = "Bot" })
+Example (Simple): morehttp.sendwebhook("https://discord.com/api/...", "Hello World!")
+Example (Complex): morehttp.sendwebhook("url", { content = "Hi", username = "Bot" })
 
-request.downloadrepo(owner: string, repo: string, branch: string, target_folder: string)
+morehttp.downloadrepo(owner: string, repo: string, branch: string, target_folder: string)
 Downloads a github repo to a target folder. Overwrites if folder already exists to allow updating.
 Example:
-request.downloadrepo("Sleve-m", "More-Library", "main", "MoreLibrary")
+morehttp.downloadrepo("Sleve-m", "More-Library", "main", "MoreLibrary")
 
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
@@ -595,7 +596,7 @@ More Debug v1.0.0a: (4 functions)
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
 
-debug.benchmark(name: string, func: function, iterations: int(optional)) -> total time: number, average time: number
+debug.benchmark(func: function, iterations: int(optional)) -> total time: number, average time: number
 Runs a function multiple times and returns how long it took in seconds.
 Great for checking if your code is lagging the game.
 Example: 
@@ -615,10 +616,16 @@ if debug.ping() > 100 then print("High latency!") end
 
 debug.getmemory() -> number
 Returns the current memory usage of the Roblox client in Megabytes.
-Example: log("RAM Used: " .. debug.getmemory() .. "MB")
+Example: print("RAM Used: " .. debug.getmemory() .. "MB")
 
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
-More Services v1.0.0a: (3 linking variabls)
+More Service v1.0.0a: (3 links)
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
+
+UserInputService = game:GetService("UserInputService")
+
+RunService = game:GetService("RunService")
+
+HttpService = game:GetService("HttpService")

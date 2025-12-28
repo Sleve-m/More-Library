@@ -141,17 +141,18 @@ end
 
 function moreFilesystem.load()
     local ioGlobal = {}
-    getgenv()
-    getgenv().writetabletofile = writeTableToFile
-    getgenv().loadtablefromfile = loadTableFromFile
-    getgenv().requirefile = requireFile
-    getgenv().safewritefile = safeWriteFile
-    getgenv().getfilesrecursive = getFilesRecursive
-    getgenv().wipefolder = wipeFolder
-    getgenv().copyfile = copyFile
-    getgenv().movefile = moveFile
-    getgenv().downloadfile = downloadFile
-    getgenv().appendfilewithlog = appendFileWithLog
+    ioGlobal.writetabletofile = writeTableToFile
+    ioGlobal.loadtablefromfile = loadTableFromFile
+    ioGlobal.requirefile = requireFile
+    ioGlobal.safewritefile = safeWriteFile
+    ioGlobal.getfilesrecursive = getFilesRecursive
+    ioGlobal.wipefolder = wipeFolder
+    ioGlobal.copyfile = copyFile
+    ioGlobal.movefile = moveFile
+    ioGlobal.downloadfile = downloadFile
+    ioGlobal.appendfilewithlog = appendFileWithLog
+    getgenv().io = ioGlobal
+    setreadonly(getgenv().io, true)
 end
 
 return moreFilesystem
