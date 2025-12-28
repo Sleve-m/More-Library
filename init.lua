@@ -11,7 +11,7 @@ local toLoad = {
     "moreTable.lua",
     "moreUI.lua",
     "moreDrawing.lua",
-    "moreFilesystem.lua",
+    "moreIO.lua",
     "moreInput.lua",
     "moreHttp.lua",
     "moreDebug.lua",
