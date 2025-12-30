@@ -219,13 +219,41 @@ end
 local function flatstring(t, keys)
     local keylist = keys or ""
     local result = ""
+
     for key, value in pairs(t) do
-        local keyStr = keylist .. (typeof(key) == "string" and '["'..key..'"]' or "["..key.."]")
+        -- 1. Format the Key safely
+        local keyStr = keylist .. (typeof(key) == "string" and '["'..key..'"]' or "["..tostring(key).."]")
+
+        -- 2. Handle Recursive Tables
         if typeof(value) == "table" then
-            result = result .. flatstring(value, keyStr).."\n"
+            result = result .. flatstring(value, keyStr)
         else
-            local valStr = tostring(value)
-            result = result .. keyStr .. " = " .. valStr .. (next(t, key) and ",\n" or "")
+            -- 3. Handle Value Types
+            local valStr = ""
+            local typeVal = typeof(value)
+
+            if typeVal == "Instance" then
+                -- FIX: Use GetFullName for instances so you know where they are
+                -- We wrap it in a comment or string so it doesn't break syntax if you paste it
+                valStr = "game." .. value:GetFullName() 
+            
+            elseif typeVal == "string" then
+                -- FIX: Wrap strings in quotes
+                valStr = '"' .. value .. '"'
+            
+            elseif typeVal == "Vector3" then
+                valStr = "Vector3.new(" .. tostring(value) .. ")"
+            
+            elseif typeVal == "CFrame" then
+                valStr = "CFrame.new(" .. tostring(value) .. ")"
+            
+            else
+                -- Numbers, Booleans, etc.
+                valStr = tostring(value)
+            end
+
+            -- 4. Construct the line
+            result = result .. keyStr .. " = " .. valStr .. "\n"
         end
     end
     return result

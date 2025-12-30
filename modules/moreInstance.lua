@@ -1,6 +1,6 @@
 local moreInstance = {}
 
-local function setProperties(inst, props)
+local function modify(inst, props)
     for i, v in pairs(props) do
         inst[i] = v
     end
@@ -11,7 +11,7 @@ function moreInstance.load()
     local FakeInstance = {}
     FakeInstance.new = function(...) return RealInstance.new(...) end
     FakeInstance.fromExisting = function(...) return RealInstance.fromExisting(...) end
-    FakeInstance.setproperties = setProperties
+    FakeInstance.modify = modify
     getgenv().Instance = FakeInstance
     setreadonly(getgenv().Instance, true)
 end
