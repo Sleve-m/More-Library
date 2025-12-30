@@ -25,9 +25,8 @@ local function writeTableToFile(filePath, dataTable)
     local success, json = pcall(function()
         return HttpService:JSONEncode(dataTable)
     end)
-
     if not success then
-        warn("Failed to encode JSON for path: " .. filePath)
+        warn("io.writetotable failed to encode JSON for path: " .. filePath)
         return false
     end
     safeWriteFile(filePath, json)
@@ -42,9 +41,8 @@ local function loadTableFromFile(filePath)
     local success, result = pcall(function()
         return HttpService:JSONDecode(content)
     end)
-
     if not success then
-        warn("Failed to decode JSON from path: " .. filePath)
+        warn("io.loadtablefromfile failed to decode JSON from path: " .. filePath)
         return nil
     end
     return result
@@ -52,43 +50,46 @@ end
 
 local function requireFile(path)
     if not isfile(path) then
-        warn("File does not exist: " .. path)
+        warn("io.requirefile: file does not exist: " .. path)
         return nil
     end
     local content = readfile(path)
     local func, syntaxErr = loadstring(content)
     if not func then
-        warn("SYNTAX ERROR in " .. path .. ": " .. tostring(syntaxErr))
+        warn("io.requirefile: SYNTAX ERROR in " .. path .. ": " .. tostring(syntaxErr))
         return nil
     end
     local success, result = pcall(func)
     if not success then
-        warn("RUNTIME ERROR inside " .. path .. ": " .. tostring(result))
+        warn("io.requirefile: RUNTIME ERROR inside " .. path .. ": " .. tostring(result))
         return nil
     end
     return result
 end
 
 local function getFilesRecursive(folderPath)
-    local allFiles = {}
+    local function getName(path)
+        return string.match(path, "[^/\\]+$")
+    end
     local function scan(path)
-        if not isfolder(path) then return end
+        local dirStructure = {}
+        if not isfolder(path) then return dirStructure end
         local items = listfiles(path)
         for _, item in ipairs(items) do
             if isfolder(item) then
-                scan(item)
+                local folderName = getName(item)
+                dirStructure[folderName] = scan(item)
             elseif isfile(item) then
-                table.insert(allFiles, item)
+                table.insert(dirStructure, item)
             end
         end
+        return dirStructure
     end
-    scan(folderPath)
-    return allFiles
+    return scan(folderPath)
 end
 
 local function wipeFolder(path)
     if not isfolder(path) then return end
-    
     local items = listfiles(path)
     for _, item in ipairs(items) do
         if isfile(item) then
@@ -97,19 +98,15 @@ local function wipeFolder(path)
             wipeFolder(item)
         end
     end
-    
-    delfolder(path)
 end
 
 local function copyFile(sourcePath, destPath)
     if not isfile(sourcePath) then return false end
-    
     local content = readfile(sourcePath)
     local destFolder = destPath:match("^(.*)/")
     if destFolder and not isfolder(destFolder) then
         makefolder(destFolder)
     end
-    
     safeWriteFile(destPath, content)
     return true
 end
@@ -126,7 +123,6 @@ local function downloadFile(path, url)
     local success, content = pcall(function()
         return game:HttpGet(url)
     end)
-    
     if success then
         safeWriteFile(path, content)
         return true
@@ -139,11 +135,17 @@ local function appendFileWithLog(path, text)
     appendfile(path, timestamp .. tostring(text) .. "\n")
 end
 
+local requireFileOrGet(path, url)
+    local result = isfile(path) and requireFile(path) or loadstring(game:HttpGet(url))
+    return result
+end
+
 function moreIO.load()
     local ioGlobal = {}
     ioGlobal.writetabletofile = writeTableToFile
     ioGlobal.loadtablefromfile = loadTableFromFile
     ioGlobal.requirefile = requireFile
+    ioGlobal.requirefileorget = requireFileOrGet
     ioGlobal.safewritefile = safeWriteFile
     ioGlobal.getfilesrecursive = getFilesRecursive
     ioGlobal.wipefolder = wipeFolder

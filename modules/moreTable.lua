@@ -178,7 +178,6 @@ local function sortNatural(t)
     local function pad(s)
         return string.format("%05d", s)
     end
-    
     table.sort(t, function(a, b)
         local aa = tostring(a):gsub("%d+", pad)
         local bb = tostring(b):gsub("%d+", pad)

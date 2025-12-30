@@ -6,15 +6,6 @@ local function appendString(str, app)
     return str..app
 end
 
-local function split(input, sep)
-    if sep == nil then sep = "%s" end
-    local t = {}
-    for str in string.gmatch(input, "([^"..sep.."]+)") do
-        table.insert(t, str)
-    end
-    return t
-end
-
 local function startsWith(str, start)
     return string.sub(str, 1, #start) == start
 end
@@ -139,7 +130,6 @@ end
 function moreString.load()
     local globalString = getgenv().string
     setreadonly(globalString, false)
-    globalString.split = split
     globalString.startswith = startsWith
     globalString.endswith = endsWith
     globalString.random = random

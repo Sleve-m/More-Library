@@ -16,7 +16,6 @@ local toLoad = {
     "moreHttp.lua",
     "moreDebug.lua",
     "moreInstance.lua",
-    "moreService.lua",
     "moreLogic.lua"
 }
 

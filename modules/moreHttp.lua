@@ -1,4 +1,4 @@
---More Network v1.0.0a
+--More Http v1.0.0a
 
 local HttpService = game:GetService("HttpService")
 local moreHttp = {}
@@ -27,7 +27,7 @@ local function jsonRequest(url, method, data)
     local encodedData = ""
     if data then
         local s, e = pcall(function() return HttpService:JSONEncode(data) end)
-        if s then encodedData = e else warn("moreNetwork: Failed to encode JSON") return nil end
+        if s then encodedData = e else warn("morehttp.jsonrequest: failed to encode JSON") return nil end
     end
     local response = request({
         Url = url,
@@ -74,17 +74,17 @@ local function download_repo(owner, repo, branch, target_folder)
         Headers = headers
     })
     if not response then
-        return warn("[-] Request Failed: Response was nil (Network Error?)")
+        return warn("morehttp.downloadrepo: Request failed because response was nil")
     end
     if response.StatusCode ~= 200 then
-        warn("[-] GitHub API Failed!")
+        warn("morehttp.downloadrepo: GitHub API Failed")
         warn("    Status: " .. tostring(response.StatusCode))
         warn("    Body: " .. tostring(response.Body))
         return
     end
     local data = HttpService:JSONDecode(response.Body)
     if not data.tree then 
-        return warn("[-] No file tree found in response.") 
+        return warn("http.downloadrepo: No file tree found in response.") 
     end
     if not isfolder(target_folder) then 
         makefolder(target_folder) 
@@ -106,7 +106,7 @@ local function download_repo(owner, repo, branch, target_folder)
                     writefile(path, content)
                     file_count = file_count + 1
                 else
-                    warn("[-] Failed to download file: " .. item.path)
+                    warn("http.downloadrepo: Failed to download file: " .. item.path)
                 end
             end)
         end

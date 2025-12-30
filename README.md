@@ -4,7 +4,7 @@ Put this in your autoexec:
 loadstring(isfile("MoreLibrary/init.lua") and readfile("MoreLibrary/init.lua") or game:HttpGet("https://raw.githubusercontent.com/Sleve-m/More-Library/refs/heads/main/init.lua"))()
 
 Put this in your script before any MoreLibrary functions are called:
-local morelibraryloadsuccess = nil
+local morelibraryloadsuccess
 if not getgenv().MoreLibraryLoaded then
   local starttime = os.clock()
   while wait(0.1) do
@@ -18,6 +18,21 @@ If you have any issues or suggestions please contact me on discord - sleve
 
 
 Documentation: (112 functions)
+
+Contents:
+More Math
+More String
+More Table
+More Color
+More UI
+More Instance
+More Input
+More IO
+More Drawing
+More Http
+More Debug
+More Service
+More Logic
 
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
@@ -97,10 +112,6 @@ More String v1.0.0a: (23 functions)
 string.append(str, toappend)
 string.append("Text", "More text") -> "TextMore text"
 Appends to a string. Replaces: myString = myString .. appendText
-
-string.split(str, separator)
-string.split("one,two,three", ",") -> {"one", "two", "three"}
-Splits a string into a table based on the separator. Defaults to space if no separator is provided.
 
 string.startswith(str, prefix)
 string.startswith("/e dance", "/e") -> true
@@ -477,49 +488,59 @@ Example: if not moreinput.iswindowactive() then return end
 
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
-More io v1.0.0a: (10 functions)
+More IO v1.0.0a: (10 functions)
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
 
 io.writetabletofile(path: string, data: table) -> bool
 Serializes a Lua table to JSON and saves it. Automatically creates missing folders.
-Example: io.writetabletofile("Configs/settings.json", {Speed = 16})
+Example:
+io.writetabletofile("Configs/settings.json", {Speed = 16})
 
 io.loadtablefromfile(path: string) -> table | nil
 Loads a JSON file and converts it to a Lua table. Returns nil if file missing/bad.
-Example: local data = io.loadtablefromfile("Configs/settings.json")
+Example:
+local data = io.loadtablefromfile("Configs/settings.json")
 
 io.requirefile(path: string) -> any
 Loads and runs a local Lua file (like 'require' but for files).
-Example: local lib = io.requirefile("Libs/MyLib.lua")
+Example:
+local lib = io.requirefile("Libs/MyLib.lua")
 
 io.safewritefile(path: string, content: string) -> void
 Writes a string to a file, ensuring the folder exists first.
-Example: io.safewritefile("Logs/log.txt", "Started")
+Example:
+io.safewritefile("Logs/log.txt", "Started")
 
 io.getfilesrecursive(folder: string) -> table
 Returns a list of all file paths in a folder AND its subfolders.
-Example: local files = io.getfilesrecursive("Scripts")
+Example:
+local files = io.getfilesrecursive("Scripts")
 
 io.wipefolder(folder: string) -> void
 Recursively deletes a folder and ALL contents (fixes 'delfolder' errors).
-Example: io.wipefolder("Cache")
+Example:
+io.wipefolder("Cache")
 
 io.copyfile(source: string, dest: string) -> bool
 Copies a file from source to dest. Auto-creates dest folder.
-Example: io.copyfile("config.json", "config.backup")
+Example:
+io.copyfile("config.json", "config.backup")
 
 io.movefile(source: string, dest: string) -> bool
 Moves a file from source to dest (Copy + Delete).
-Example: io.movefile("temp.lua", "real.lua")
+Example:
+io.movefile("temp.lua", "real.lua")
 
 io.downloadfile(path: string, url: string) -> bool
 Downloads content from a URL and saves it to a file.
-Example: io.downloadfile("image.png", "https://example.com/img.png")
+Example:
+io.downloadfile("image.png", "https://example.com/img.png")
 
 io.appendfilewithlog(path: string, text: string) -> void
 Appends text to a file with a timestamp [YYYY-MM-DD HH:MM:SS].
-Example: io.appendfilewithlog("debug.log", "Script executed")
+Example:
+io.appendfilewithlog("debug.log", "Script executed")
 
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
@@ -529,31 +550,38 @@ More Drawing v1.0.0a: (8 functions)
 
 Drawing.drawtriangle(p1, p2, p3, color, filled) -> Triangle
 Draws a triangle between three Vector2 points.
-Example: Drawing.drawtriangle(Vector2.new(100,100), Vector2.new(150,200), Vector2.new(50,200))
+Example:
+local t = Drawing.drawtriangle(Vector2.new(100,100), Vector2.new(150,200), Vector2.new(50,200))
 
 Drawing.drawquad(p1, p2, p3, p4, color, filled) -> Quad
 Draws a 4-point polygon (essential for 3D boxes).
-Example: Drawing.drawquad(v2_TopLeft, v2_TopRight, v2_BotRight, v2_BotLeft)
+Example:
+local q = Drawing.drawquad(v2_TopLeft, v2_TopRight, v2_BotRight, v2_BotLeft)
 
 Drawing.drawcircle(pos: Vector2, radius: number, color: Color3, filled: bool) -> Circle
 Creates a circle.
-Example: local c = Drawing.drawcircle(Vector2.new(500,500), 50, Color3.new(0,1,0), true)
+Example:
+local c = Drawing.drawcircle(Vector2.new(500,500), 50, Color3.new(0,1,0), true)
 
 Drawing.drawtext(pos: Vector2, text: string, color: Color3, size: number, center: bool) -> Text
 Creates text with an outline (for readability).
-Example: local t = Drawing.drawtext(Vector2.new(100,100), "Enemy", Color3.new(1,1,1), 20)
+Example:
+local t = Drawing.drawtext(Vector2.new(100,100), "Enemy", Color3.new(1,1,1), 20)
 
 Drawing.drawsquare(pos: Vector2, size: Vector2, color: Color3, filled: bool) -> Square
 Creates a square/rectangle.
-Example: local s = Drawing.drawsquare(Vector2.new(100,100), Vector2.new(50,50), Color3.new(1,0,0))
+Example:
+local s = Drawing.drawsquare(Vector2.new(100,100), Vector2.new(50,50), Color3.new(1,0,0))
 
 Drawing.drawimage(pos, raw_data, size) -> Image
 Draws an image from raw file data.
-Example: Drawing.drawimage(Vector2.new(100,100), readfile("my_icon.png"), Vector2.new(32,32))
+Example:
+local i = Drawing.drawimage(Vector2.new(100,100), readfile("my_icon.png"), Vector2.new(32,32))
 
 Drawing.getscreencenter() -> Vector2
 Returns the exact center of the screen (useful for crosshairs or FOV circles).
-Example: local circle = Drawing.drawcircle(Drawing.getscreencenter(), 100, Color3.new(1,1,1))
+Example:
+local c = Drawing.drawcircle(Drawing.getscreencenter(), 100, Color3.new(1,1,1))
 
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
@@ -563,7 +591,8 @@ More Http v1.0.0a: (5 functions)
 
 morehttp.simpleget(url: string) -> string | nil
 A wrapper for game:HttpGet. Returns the raw body string or nil on failure.
-Example: local rawHtml = morehttp.simpleget("https://google.com")
+Example:
+local rawHtml = morehttp.simpleget("https://google.com")
 
 morehttp.simplerequest(url: string, method: string, headers: table, body: string) -> table
 Sends a raw HTTP request. Method defaults to "GET".
@@ -580,13 +609,15 @@ local response = morehttp.jsonrequest("https://api.mygame.com/save", "POST", {Sc
 print(response.Success)
 
 morehttp.sendwebhook(url: string, payload: string | table) -> void
-Quickly sends a message to a Discord webhook. 
+Quickly sends a message to a webhook. 
 Accepts a simple string (message content) OR a table (for embeds/username/avatar).
-Example (Simple): morehttp.sendwebhook("https://discord.com/api/...", "Hello World!")
-Example (Complex): morehttp.sendwebhook("url", { content = "Hi", username = "Bot" })
+Example (Simple): 
+morehttp.sendwebhook("https://discord.com/api/...", "Hello World!")
+Example (Complex): 
+morehttp.sendwebhook("url", { content = "Hi", username = "Bot" })
 
-morehttp.downloadrepo(owner: string, repo: string, branch: string, target_folder: string)
-Downloads a github repo to a target folder. Overwrites if folder already exists to allow updating.
+morehttp.downloadrepo(owner: string, repo: string, branch: string, target_folder: string) -> void
+Downloads a github repository to a target folder; Overwrites if folder already exists to allow updating.
 Example:
 morehttp.downloadrepo("Sleve-m", "More-Library", "main", "MoreLibrary")
 
@@ -597,7 +628,7 @@ More Debug v1.0.0a: (4 functions)
 -----------------------------------------------------------------------
 
 debug.benchmark(func: function, iterations: int(optional)) -> total time: number, average time: number
-Runs a function multiple times and returns how long it took in seconds.
+Runs a function multiple times(or once) and returns how long it took in seconds.
 Great for checking if your code is lagging the game.
 Example: 
 local totaltime, avgtime = debug.benchmark(function() 
@@ -620,12 +651,18 @@ Example: print("RAM Used: " .. debug.getmemory() .. "MB")
 
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
-More Service v1.0.0a: (3 links)
+More Logic v1.0.0a: (4 functions)
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
 
-UserInputService = game:GetService("UserInputService")
+xor(con1: boolean, con2: boolean) -> boolean
+Returns true if either conditions are true but not if both are true.
 
-RunService = game:GetService("RunService")
+nor(con1: boolean, con2: boolean) -> boolean
+Returns true if neither conditions are true.
 
-HttpService = game:GetService("HttpService")
+nand(con1: boolean, con2: boolean) -> boolean
+Returns true if either or both conditions are false.
+
+xnor(con1: boolean, con2: boolean) -> boolean
+Returns true if either both conditions are true or both are false.

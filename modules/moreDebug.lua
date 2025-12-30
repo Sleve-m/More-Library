@@ -7,14 +7,11 @@ local moreDebug = {}
 local function benchmark(func, iterations)
     iterations = iterations or 1
     local start = os.clock()
-    
     for i = 1, iterations do
         func()
     end
-    
     local totalTime = os.clock() - start
     local avgTime = totalTime / iterations
-    
     return totalTime, avgTime
 end
 
