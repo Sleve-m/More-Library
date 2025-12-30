@@ -135,7 +135,7 @@ local function appendFileWithLog(path, text)
     appendfile(path, timestamp .. tostring(text) .. "\n")
 end
 
-local requireFileOrGet(path, url)
+local function requireFileOrGet(path, url)
     local result = isfile(path) and requireFile(path) or loadstring(game:HttpGet(url))
     return result
 end
