@@ -16,8 +16,10 @@ end
 
 local function random(length)
     local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    local randomString = ""
-    for i = 1, length do
+    local charsnonum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    local firstindex = math.random(#charsnonum)
+    local randomString = string.sub(charsnonum, firstindex, firstindex)
+    for i = 1, (length-1) do
         local randIndex = math.random(#chars)
         randomString = randomString .. string.sub(chars, randIndex, randIndex)
     end

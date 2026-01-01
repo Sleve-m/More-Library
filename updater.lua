@@ -45,7 +45,7 @@ function updater:update()
     local currentupdate = game:HttpGet("https://raw.githubusercontent.com/Sleve-m/More-Library/refs/heads/main/version.txt")
     local currentversion = isfile("MoreLibrary/version.txt") and readfile("MoreLibrary/version.txt") or nil
     if currentupdate ~= currentversion then
-        local http_request = request or http_request or (syn and syn.request) or (fluxus and fluxus.request)
+        print("Updating from "..currentversion.." to "..currentupdate)
         download_repo("Sleve-m", "More-Library", "main", "MoreLibrary")
     end
 end

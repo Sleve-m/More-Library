@@ -507,6 +507,9 @@ Loads and runs a local Lua file (like 'require' but for files).
 Example:
 local lib = io.requirefile("Libs/MyLib.lua")
 
+io.requirefileorget(path: string, url: string) -> any
+Does what requirefile does but if the file does not exist it requires the file from the given url.
+
 io.safewritefile(path: string, content: string) -> void
 Writes a string to a file, ensuring the folder exists first.
 Example:
