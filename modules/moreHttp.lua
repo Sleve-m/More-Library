@@ -60,6 +60,14 @@ local function sendWebhook(url, contentOrTable)
     })
 end
 
+local function cleanPath(pathStr)
+	local parts = {}
+	for part in string.gmatch(pathStr, "[^/]+") do
+		table.insert(parts, HttpService:UrlEncode(part))
+	end
+	return table.concat(parts, "/")
+end
+
 local function download_repo(owner, repo, branch, target_folder)
     local branch = branch or "main"
     local target_folder = target_folder or repo
@@ -106,22 +114,21 @@ local function download_repo(owner, repo, branch, target_folder)
                 makefolder(path)
             end
         elseif item.type == "blob" then
-            local raw_url = "https://raw.githubusercontent.com/"..owner.."/"..repo.."/"..branch.."/"..item.path
-            
-            active_downloads = active_downloads + 1 
-            
-            local success, content = pcall(function() 
-                return game:HttpGet(raw_url) 
-            end)
-
-            if success then
-                writefile(path, content)
-            else
-                warn("http.downloadrepo: Failed to download file: " .. item.path)
-            end
-            
-            active_downloads = active_downloads - 1
-        end
+			local encoded_path = cleanPath(item.path)
+			
+			local raw_url = "https://raw.githubusercontent.com/"..owner.."/"..repo.."/"..branch.."/"..encoded_path
+			
+			local response = http_request({
+				Url = raw_url,
+				Method = "GET"
+			})
+			
+			if response and response.StatusCode == 200 then
+				writefile(path, response.Body)
+			else
+				warn("Failed to download: " .. item.path)
+			end
+		end
     end
 
     while active_downloads > 0 do
