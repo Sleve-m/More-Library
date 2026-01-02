@@ -130,7 +130,7 @@ local function strike(str)
 end
 
 function moreString.load()
-    local globalString = getgenv().string
+    local globalString = gettenv(coroutine.running()).string
     setreadonly(globalString, false)
     globalString.startswith = startsWith
     globalString.endswith = endsWith

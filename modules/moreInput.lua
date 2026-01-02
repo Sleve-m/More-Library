@@ -93,8 +93,8 @@ function moreInput.load()
     inputGlobal.waitforkey = waitForKey
     inputGlobal.getmousepos = getMousePos
     inputGlobal.iswindowactive = isWindowActive
-    getgenv().moreinput = inputGlobal
-    setreadonly(getgenv().moreinput, true)
+    gettenv(coroutine.running()).moreinput = inputGlobal
+    setreadonly(gettenv(coroutine.running()).moreinput, true)
 end
 
 return moreInput

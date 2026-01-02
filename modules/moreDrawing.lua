@@ -87,7 +87,7 @@ local function getCenter()
 end
 
 function moreDrawing.load()
-    drawingGlobal = getgenv().Drawing
+    drawingGlobal = gettenv(coroutine.running()).Drawing
     setreadonly(drawingGlobal, false)
     drawingGlobal.wts = worldToScreen
     drawingGlobal.getscreencenter = getCenter

@@ -15,8 +15,8 @@ function moreUI.load()
     local UIGlobal = {}
     UIGlobal.createtext = createtext
     UIGlobal.createimage = createimage
-    getgenv().UI = UIGlobal
-    setreadonly(getgenv().UI, true)
+    gettenv(coroutine.running()).UI = UIGlobal
+    setreadonly(gettenv(coroutine.running()).UI, true)
 end
 
 return moreUI

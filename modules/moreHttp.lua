@@ -120,8 +120,8 @@ function moreHttp.load()
     httpGlobal.jsonrequest = jsonRequest
     httpGlobal.sendwebhook = sendWebhook
     httpGlobal.downloadrepo = download_repo
-    getgenv().morehttp = httpGlobal
-    setreadonly(getgenv().morehttp, true)
+    gettenv(coroutine.running()).morehttp = httpGlobal
+    setreadonly(gettenv(coroutine.running()).morehttp, true)
 end
 
 return moreHttp

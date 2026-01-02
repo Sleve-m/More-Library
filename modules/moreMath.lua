@@ -69,7 +69,7 @@ local function quadraticBezier(t, p0, p1, p2)
 end
 
 function moreMath.load()
-    local globalMath = getgenv().math
+    local globalMath = gettenv(coroutine.running()).math
     setreadonly(globalMath, false)
     globalMath.odd = odd
     globalMath.even = even

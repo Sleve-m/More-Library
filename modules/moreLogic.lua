@@ -19,10 +19,10 @@ function xnor(con1, con2)
 end
 
 function moreLogic.load()
-    getgenv().xor = xor
-    getgenv().nor = nor
-    getgenv().nand = nand
-    getgenv().xnor = xnor
+    gettenv(coroutine.running()).xor = xor
+    gettenv(coroutine.running()).nor = nor
+    gettenv(coroutine.running()).nand = nand
+    gettenv(coroutine.running()).xnor = xnor
 end
 
 return moreLogic

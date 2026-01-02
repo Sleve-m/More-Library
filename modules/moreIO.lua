@@ -153,8 +153,8 @@ function moreIO.load()
     ioGlobal.movefile = moveFile
     ioGlobal.downloadfile = downloadFile
     ioGlobal.appendfilewithlog = appendFileWithLog
-    getgenv().io = ioGlobal
-    setreadonly(getgenv().io, true)
+    gettenv(coroutine.running()).io = ioGlobal
+    setreadonly(gettenv(coroutine.running()).io, true)
 end
 
 return moreIO

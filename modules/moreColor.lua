@@ -69,7 +69,7 @@ local function complementary(color)
 end
 
 function moreColor.load()
-    local globalColor = getgenv().Color3
+    local globalColor = gettenv(coroutine.running()).Color3
     setreadonly(globalColor, false)
     globalColor.tohex = toHex
     globalColor.darken = darken

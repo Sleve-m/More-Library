@@ -12,8 +12,8 @@ function moreInstance.load()
     FakeInstance.new = function(...) return RealInstance.new(...) end
     FakeInstance.fromExisting = function(...) return RealInstance.fromExisting(...) end
     FakeInstance.modify = modify
-    getgenv().Instance = FakeInstance
-    setreadonly(getgenv().Instance, true)
+    gettenv(coroutine.running()).Instance = FakeInstance
+    setreadonly(gettenv(coroutine.running()).Instance, true)
 end
 
 return moreInstance

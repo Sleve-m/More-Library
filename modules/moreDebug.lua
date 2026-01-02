@@ -28,7 +28,7 @@ local function getMemory()
 end
 
 function moreDebug.load()
-    local globalDebug = getgenv().debug
+    local globalDebug = gettenv(coroutine.running()).debug
     setreadonly(globalDebug, false)
     globalDebug.benchmark = benchmark
     globalDebug.getfps = getFPS

@@ -158,7 +158,7 @@ local function tabledo(t, predicate)
     end
 end
 
-local function sortBy(t, property)
+local function sortBy(t, property, reft)
     table.sort(t, function(a, b)
         if not a[property] then return false end
         if not b[property] then return true end
@@ -221,24 +221,18 @@ local function flatstring(t, keys)
     local result = ""
 
     for key, value in pairs(t) do
-        -- 1. Format the Key safely
         local keyStr = keylist .. (typeof(key) == "string" and '["'..key..'"]' or "["..tostring(key).."]")
 
-        -- 2. Handle Recursive Tables
         if typeof(value) == "table" then
             result = result .. flatstring(value, keyStr)
         else
-            -- 3. Handle Value Types
             local valStr = ""
             local typeVal = typeof(value)
 
             if typeVal == "Instance" then
-                -- FIX: Use GetFullName for instances so you know where they are
-                -- We wrap it in a comment or string so it doesn't break syntax if you paste it
                 valStr = "game." .. value:GetFullName() 
             
             elseif typeVal == "string" then
-                -- FIX: Wrap strings in quotes
                 valStr = '"' .. value .. '"'
             
             elseif typeVal == "Vector3" then
@@ -248,11 +242,9 @@ local function flatstring(t, keys)
                 valStr = "CFrame.new(" .. tostring(value) .. ")"
             
             else
-                -- Numbers, Booleans, etc.
                 valStr = tostring(value)
             end
 
-            -- 4. Construct the line
             result = result .. keyStr .. " = " .. valStr .. "\n"
         end
     end
@@ -319,7 +311,7 @@ local function deepconcat(t, sep, newline)
 end
 
 function moreTable.load()
-    local globalTable = getgenv().table
+    local globalTable = gettenv(coroutine.running()).table
     setreadonly(globalTable, false)
     globalTable.keys = keys
     globalTable.values = values

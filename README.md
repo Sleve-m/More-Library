@@ -5,10 +5,10 @@ loadstring(isfile("MoreLibrary/init.lua") and readfile("MoreLibrary/init.lua") o
 
 Put this in your script before any MoreLibrary functions are called:
 local morelibraryloadsuccess
-if not getgenv().MoreLibraryLoaded then
+if not gettenv(coroutine.running()).MoreLibraryLoaded then
   local starttime = os.clock()
   while wait(0.1) do
-    if getgenv().MoreLibraryLoaded then morelibraryloadsuccess = true; break end
+    if gettenv(coroutine.running()).MoreLibraryLoaded then morelibraryloadsuccess = true; break end
     if (os.clock()-starttime) > 10 then morelibraryloadsuccess = false; break end
   end
 end
