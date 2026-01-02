@@ -110,19 +110,17 @@ local function download_repo(owner, repo, branch, target_folder)
             
             active_downloads = active_downloads + 1 
             
-            task.spawn(function()
-                local success, content = pcall(function() 
-                    return game:HttpGet(raw_url) 
-                end)
-
-                if success then
-                    writefile(path, content)
-                else
-                    warn("http.downloadrepo: Failed to download file: " .. item.path)
-                end
-                
-                active_downloads = active_downloads - 1
+            local success, content = pcall(function() 
+                return game:HttpGet(raw_url) 
             end)
+
+            if success then
+                writefile(path, content)
+            else
+                warn("http.downloadrepo: Failed to download file: " .. item.path)
+            end
+            
+            active_downloads = active_downloads - 1
         end
     end
 
